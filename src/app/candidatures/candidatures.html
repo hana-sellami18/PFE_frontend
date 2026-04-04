@@ -1,0 +1,372 @@
+<div class="cand-page">
+  <div class="cand-wrap">
+
+    <!-- HERO — même structure que enc-header -->
+    <section class="cand-header">
+      <div class="cand-header-left">
+        <div class="cand-badge">
+          <span class="cand-badge-dot"></span>
+          Espace RH
+        </div>
+
+        <h1 class="cand-title">
+          Gestion des <span class="cand-accent">Candidatures</span>
+        </h1>
+
+        <p class="cand-subtitle">
+          Consultez et traitez les candidatures déposées pour vos offres de stage.
+        </p>
+      </div>
+
+      <div class="cand-stats">
+        <div class="cand-stat">
+          <span class="cand-stat-value">{{ candidatures.length }}</span>
+          <span class="cand-stat-label">Total</span>
+        </div>
+
+        <div class="cand-stat highlight">
+          <span class="cand-stat-value">{{ totalEnAttente }}</span>
+          <span class="cand-stat-label">En attente</span>
+        </div>
+
+        <div class="cand-stat green">
+          <span class="cand-stat-value">{{ totalAcceptees }}</span>
+          <span class="cand-stat-label">Acceptées</span>
+        </div>
+
+        <div class="cand-stat red">
+          <span class="cand-stat-value">{{ totalRefusees }}</span>
+          <span class="cand-stat-label">Refusées</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROLES -->
+    <div class="cand-controls">
+      <div class="cand-search" [class.focused]="searchFocused">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+
+        <input
+          class="cand-search-input"
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Rechercher un candidat, sujet…"
+          (focus)="searchFocused = true"
+          (blur)="searchFocused = false"
+        />
+
+        <button class="cand-search-x" *ngIf="searchQuery" (click)="searchQuery = ''">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="cand-filters">
+        <button class="cand-filter-btn" [class.active]="filterStatut === 'TOUS'" (click)="setFilter('TOUS')">Tous</button>
+        <button class="cand-filter-btn orange" [class.active]="filterStatut === 'EN_ATTENTE'" (click)="setFilter('EN_ATTENTE')">En attente</button>
+        <button class="cand-filter-btn green"  [class.active]="filterStatut === 'ACCEPTE'"   (click)="setFilter('ACCEPTE')">Acceptées</button>
+        <button class="cand-filter-btn red"    [class.active]="filterStatut === 'REFUSEE'"   (click)="setFilter('REFUSEE')">Refusées</button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="cand-loading" *ngIf="loading">
+      <div class="cand-spinner"></div>
+      <p>Chargement des candidatures…</p>
+    </div>
+
+    <!-- TABLE -->
+    <div class="cand-table-wrap" *ngIf="!loading">
+      <div class="cand-thead">
+        <div class="cand-th">#</div>
+        <div class="cand-th">Candidat</div>
+        <div class="cand-th">Sujet visé</div>
+        <div class="cand-th">Dépôt</div>
+        <div class="cand-th">Score IA</div>
+        <div class="cand-th">Statut</div>
+        <div class="cand-th"></div>
+      </div>
+
+      <div class="cand-tbody">
+        <div
+          class="cand-row"
+          *ngFor="let c of filtered; let i = index; trackBy: trackByCandId"
+          [style.animation-delay]="(i * 0.04) + 's'"
+          (click)="voirDetail(c)"
+        >
+          <div
+            class="cand-row-accent"
+            [class.orange]="c.statut === 'EN_ATTENTE'"
+            [class.green]="c.statut === 'ACCEPTE'"
+            [class.red]="c.statut === 'REFUSEE'">
+          </div>
+
+          <div class="cand-row-arrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+
+          <div class="cand-td cand-td-num">
+            <span class="cand-idx">{{ i + 1 < 10 ? '0' + (i + 1) : (i + 1) }}</span>
+          </div>
+
+          <div class="cand-td cand-td-main">
+            <div class="cand-avatar" [style.background]="getAvatarColor(c.stagiaire?.nomComplet || '')">
+              {{ getInitials(c.stagiaire?.nomComplet || '') }}
+            </div>
+            <div class="cand-info">
+              <span class="cand-name">{{ c.stagiaire?.nomComplet || '—' }}</span>
+              <span class="cand-email">{{ c.stagiaire?.email }}</span>
+            </div>
+          </div>
+
+          <div class="cand-td cand-td-sujet">
+            <div class="cand-sujet-info">
+              <span class="cand-sujet-titre">{{ c.sujet?.titre || '—' }}</span>
+              <div class="cand-sujet-tags">
+                <span class="cand-tag blue" *ngIf="c.sujet?.filiereCible">{{ c.sujet?.filiereCible }}</span>
+                <span class="cand-tag gray" *ngIf="c.sujet?.cycleCible">{{ c.sujet?.cycleCible }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cand-td cand-td-date">
+            <span class="cand-date-top">{{ formatDate(c.dateDepot) }}</span>
+            <span class="cand-date-sub">{{ formatDateRelative(c.dateDepot) }}</span>
+          </div>
+
+          <div class="cand-td cand-td-score">
+            <div class="cand-score-wrap" *ngIf="c.scoreMatchingIA != null">
+              <div class="cand-score-bar">
+                <div class="cand-score-fill" [style.width.%]="c.scoreMatchingIA"></div>
+              </div>
+              <span class="cand-score-val">{{ c.scoreMatchingIA | number:'1.0-0' }}%</span>
+            </div>
+            <span class="cand-score-na" *ngIf="c.scoreMatchingIA == null">
+              <span class="cand-score-badge">Non évalué</span>
+            </span>
+          </div>
+
+          <div class="cand-td cand-td-status">
+            <span
+              class="cand-status"
+              [class.wait]="c.statut === 'EN_ATTENTE'"
+              [class.ok]="c.statut === 'ACCEPTE'"
+              [class.no]="c.statut === 'REFUSEE'">
+              <i class="cand-status-dot"></i>
+              {{ c.statut === 'EN_ATTENTE' ? 'En attente' : c.statut === 'ACCEPTE' ? 'Acceptée' : 'Refusée' }}
+            </span>
+          </div>
+
+          <div class="cand-td cand-td-actions" (click)="$event.stopPropagation()">
+            <button class="cand-act green" title="Accepter" *ngIf="c.statut === 'EN_ATTENTE'" (click)="accepter(c, $event)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+
+            <button class="cand-act red" title="Refuser" *ngIf="c.statut === 'EN_ATTENTE'" (click)="refuser(c, $event)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+
+            <button class="cand-act orange cand-act-view" title="Voir dossier" (click)="voirDetail(c)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+
+            <button class="cand-act del" title="Supprimer" (click)="supprimer(c.id, $event)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14H6L5 6"/>
+                <path d="M10 11v6m4-6v6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- EMPTY -->
+        <div class="cand-empty" *ngIf="filtered.length === 0 && !loading">
+          <div class="cand-empty-ico">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+          </div>
+          <p class="cand-empty-title">Aucune candidature</p>
+          <p class="cand-empty-sub">Modifiez vos filtres ou attendez de nouveaux dépôts.</p>
+        </div>
+      </div>
+
+      <div class="cand-tfoot" *ngIf="filtered.length > 0">
+        <span class="cand-tfoot-txt"><strong>{{ filtered.length }}</strong> candidature{{ filtered.length > 1 ? 's' : '' }}</span>
+        <div class="cand-tfoot-legend">
+          <span class="cand-leg"><i class="cand-leg-dot orange"></i>{{ totalEnAttente }} en attente</span>
+          <span>·</span>
+          <span class="cand-leg"><i class="cand-leg-dot green"></i>{{ totalAcceptees }} acceptées</span>
+          <span>·</span>
+          <span class="cand-leg"><i class="cand-leg-dot red"></i>{{ totalRefusees }} refusées</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="cand-overlay" *ngIf="selectedCand" (click)="fermerDetail()"></div>
+
+<!-- PANEL DETAIL -->
+<div class="cand-panel" *ngIf="selectedCand">
+  <div class="cand-panel-header">
+    <div class="cand-panel-title-row">
+      <span class="cand-panel-label">Dossier candidature</span>
+      <button class="cand-panel-close" (click)="fermerDetail()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cand-panel-avatar-row">
+      <div class="cand-panel-avatar" [style.background]="getAvatarColor(selectedCand.stagiaire?.nomComplet || '')">
+        {{ getInitials(selectedCand.stagiaire?.nomComplet || '') }}
+      </div>
+      <div>
+        <h2 class="cand-panel-name">{{ selectedCand.stagiaire?.nomComplet }}</h2>
+        <span class="cand-panel-email">{{ selectedCand.stagiaire?.email }}</span>
+      </div>
+
+      <span
+        class="cand-status cand-panel-status"
+        [class.wait]="selectedCand.statut === 'EN_ATTENTE'"
+        [class.ok]="selectedCand.statut === 'ACCEPTE'"
+        [class.no]="selectedCand.statut === 'REFUSEE'">
+        <i class="cand-status-dot"></i>
+        {{ selectedCand.statut === 'EN_ATTENTE' ? 'En attente' : selectedCand.statut === 'ACCEPTE' ? 'Acceptée' : 'Refusée' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="cand-panel-body">
+    <div class="cand-panel-section">
+      <span class="cand-panel-section-title">Sujet visé</span>
+      <div class="cand-panel-sujet">
+        <div class="cand-panel-sujet-ico">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f57c00" stroke-width="2" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+          </svg>
+        </div>
+        <div>
+          <p class="cand-panel-sujet-titre">{{ selectedCand.sujet?.titre }}</p>
+          <div class="cand-sujet-tags" style="margin-top:4px">
+            <span class="cand-tag blue">{{ selectedCand.sujet?.filiereCible }}</span>
+            <span class="cand-tag gray">{{ selectedCand.sujet?.cycleCible }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cand-panel-section">
+      <span class="cand-panel-section-title">Date de dépôt</span>
+      <p class="cand-panel-val">
+        {{ formatDate(selectedCand.dateDepot) }}
+        <span class="cand-muted">· {{ formatDateRelative(selectedCand.dateDepot) }}</span>
+      </p>
+    </div>
+
+    <div class="cand-panel-section" *ngIf="selectedCand.dateEntretien">
+      <span class="cand-panel-section-title">Entretien planifié</span>
+      <p class="cand-panel-val green-text">{{ formatDate(selectedCand.dateEntretien) }}</p>
+    </div>
+
+    <div class="cand-panel-section">
+      <span class="cand-panel-section-title">Score matching IA</span>
+      <div class="cand-panel-score" *ngIf="selectedCand.scoreMatchingIA != null; else noScorePanel">
+        <div class="cand-panel-score-bar">
+          <div class="cand-panel-score-fill" [style.width.%]="selectedCand.scoreMatchingIA"></div>
+        </div>
+        <strong>{{ selectedCand.scoreMatchingIA | number:'1.0-0' }}%</strong>
+      </div>
+      <ng-template #noScorePanel>
+        <p class="cand-panel-val cand-muted">Non évalué pour le moment</p>
+      </ng-template>
+    </div>
+
+    <div class="cand-panel-section" *ngIf="selectedCand.competencesExtraites?.length">
+      <span class="cand-panel-section-title">Compétences détectées (IA)</span>
+      <div class="cand-panel-skills">
+        <span class="cand-tag orange" *ngFor="let s of selectedCand.competencesExtraites">{{ s }}</span>
+      </div>
+    </div>
+
+    <div class="cand-panel-section" *ngIf="selectedCand.cvPath">
+      <span class="cand-panel-section-title">CV déposé</span>
+      <a class="cand-cv-btn" (click)="ouvrirCv(selectedCand.cvPath!)" style="cursor:pointer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <polyline points="12 18 12 12"/>
+          <polyline points="9 15 12 12 15 15"/>
+        </svg>
+        Télécharger le CV (PDF)
+      </a>
+    </div>
+
+    <div class="cand-entretien-modal" *ngIf="showEntretienModal">
+      <label class="cand-panel-section-title">Date &amp; heure de l'entretien</label>
+      <input type="datetime-local" class="cand-datetime-input" [(ngModel)]="dateEntretien"/>
+      <div class="cand-entretien-btns">
+        <button class="cand-btn-ghost" (click)="showEntretienModal = false">Annuler</button>
+        <button class="cand-btn-primary" (click)="planifierEntretien()" [disabled]="!dateEntretien || actionLoading">
+          {{ actionLoading ? 'En cours…' : 'Confirmer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cand-panel-footer" *ngIf="selectedCand.statut === 'EN_ATTENTE'">
+    <button class="cand-panel-btn orange-ghost" (click)="ouvrirEntretien()" [disabled]="actionLoading">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      Entretien
+    </button>
+
+    <button class="cand-panel-btn red-ghost" (click)="refuser(selectedCand)" [disabled]="actionLoading">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+      Refuser
+    </button>
+
+    <button class="cand-panel-btn green-solid" (click)="accepter(selectedCand)" [disabled]="actionLoading">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      {{ actionLoading ? 'En cours…' : 'Accepter' }}
+    </button>
+  </div>
+
+  <div class="cand-panel-footer-done" *ngIf="selectedCand.statut !== 'EN_ATTENTE'">
+    <span class="cand-status" [class.ok]="selectedCand.statut === 'ACCEPTE'" [class.no]="selectedCand.statut === 'REFUSEE'">
+      <i class="cand-status-dot"></i>
+      Dossier {{ selectedCand.statut === 'ACCEPTE' ? 'accepté' : 'refusé' }}
+    </span>
+  </div>
+</div>

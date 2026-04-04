@@ -1,0 +1,136 @@
+<div class="enc-page">
+  <div class="enc-wrap">
+
+    <!-- HERO -->
+    <section class="enc-header">
+      <div class="enc-header-left">
+        <div class="enc-badge">
+          <span class="enc-badge-dot"></span>
+          Espace RH
+        </div>
+
+        <h1 class="enc-title">
+          Gestion des <span class="accent">Encadrants</span>
+        </h1>
+
+        <p class="enc-subtitle">
+          Suivez la répartition des stagiaires par encadrant.
+        </p>
+      </div>
+
+      <div class="enc-stats">
+        <div class="enc-stat">
+          <span class="enc-stat-value">{{ encadrants.length }}</span>
+          <span class="enc-stat-label">Encadrants</span>
+        </div>
+
+        <div class="enc-stat">
+          <span class="enc-stat-value">{{ stagiaires.length }}</span>
+          <span class="enc-stat-label">Stagiaires</span>
+        </div>
+
+        <div class="enc-stat highlight">
+          <span class="enc-stat-value">{{ encadrantsAvecAffectation }}</span>
+          <span class="enc-stat-label">Avec affectation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOADING -->
+    <div class="enc-loading" *ngIf="loading">
+      <div class="enc-spinner"></div>
+      <p>Chargement…</p>
+    </div>
+
+    <!-- EMPTY -->
+    <div class="enc-empty" *ngIf="!loading && encadrants.length === 0">
+      <div class="enc-empty-ico">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      </div>
+      <p class="enc-empty-title">Aucun encadrant</p>
+      <p class="enc-empty-sub">Les encadrants inscrits apparaîtront ici.</p>
+    </div>
+
+    <!-- BOARD -->
+    <div class="enc-board" *ngIf="!loading && encadrants.length > 0">
+      <div class="enc-column" *ngFor="let e of encadrants; trackBy: trackByEncadrant">
+
+        <!-- Encadrant -->
+        <div class="enc-column-head">
+          <div class="enc-profile">
+            <div class="enc-avatar" [style.background]="getAvatarColor(e.nomComplet)">
+              {{ getInitials(e.nomComplet) }}
+            </div>
+
+            <div class="enc-profile-info">
+              <h3>{{ e.nomComplet }}</h3>
+              <p>{{ e.email }}</p>
+            </div>
+          </div>
+
+          <div class="enc-load-chip" [class.empty]="getStagiairesOfEncadrant(e.id).length === 0">
+            {{ getStagiairesOfEncadrant(e.id).length }} stagiaire(s)
+          </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="enc-column-body">
+          <div class="enc-column-label">Affectations</div>
+
+          <div class="enc-no-data" *ngIf="getStagiairesOfEncadrant(e.id).length === 0">
+            <span class="enc-no-data-title">Disponible</span>
+            <span class="enc-no-data-sub">Aucun stagiaire affecté pour le moment.</span>
+          </div>
+
+          <div
+            class="enc-stag-card"
+            *ngFor="let s of getStagiairesOfEncadrant(e.id); trackBy: trackByStagiaire"
+          >
+            <div class="enc-stag-top">
+              <div class="enc-stag-user">
+                <div class="enc-stag-avatar" [style.background]="getAvatarColor(s.utilisateur?.nomComplet)">
+                  {{ getInitials(s.utilisateur?.nomComplet) }}
+                </div>
+
+                <div class="enc-stag-meta">
+                  <span class="enc-stag-name">{{ s.utilisateur?.nomComplet }}</span>
+                  <span class="enc-stag-mail">{{ s.utilisateur?.email || '—' }}</span>
+                </div>
+              </div>
+
+              <span
+                class="enc-status"
+                [class.en-cours]="s.statusStage === 'EN_COURS'"
+                [class.termine]="s.statusStage === 'TERMINE'"
+              >
+                <i class="enc-status-dot"></i>
+                {{ s.statusStage === 'EN_COURS' ? 'En cours' : 'Terminé' }}
+              </span>
+            </div>
+
+            <div class="enc-stag-divider"></div>
+
+            <div class="enc-stag-details">
+              <div class="enc-detail-row">
+                <span class="enc-detail-label">Sujet</span>
+                <span class="enc-detail-value">{{ s.sujet?.titre || '—' }}</span>
+              </div>
+
+              <div class="enc-detail-row">
+                <span class="enc-detail-label">Début</span>
+                <span class="enc-detail-value">{{ s.dateDebut || '—' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

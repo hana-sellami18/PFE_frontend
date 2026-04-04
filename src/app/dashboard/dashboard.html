@@ -1,0 +1,244 @@
+<div class="db">
+
+  <!-- HEADER -->
+  <div class="db-header">
+    <div>
+      <h1 class="db-title">{{ getGreeting() }}, {{ firstName }}</h1>
+      <p class="db-sub">{{ today }}</p>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="db-kpis">
+
+    <div class="db-kpi" (click)="goCandidatures.emit()">
+      <div class="db-kpi-label-row">
+        <span class="db-kpi-l">Candidatures</span>
+        <div class="db-kpi-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+      </div>
+      <span class="db-kpi-n">{{ candidaturesCount }}</span>
+      <div class="db-tags-row">
+        <span class="db-tag wait">{{ candidaturesEnAttente }} en attente</span>
+        <span class="db-tag ok">{{ candidaturesAcceptees }} acceptées</span>
+        <span class="db-tag no">{{ candidaturesRefusees }} refusées</span>
+      </div>
+    </div>
+
+    <div class="db-kpi" (click)="goCandidatures.emit()">
+      <div class="db-kpi-label-row">
+        <span class="db-kpi-l">En attente</span>
+        <div class="db-kpi-icon orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 3"/>
+          </svg>
+        </div>
+      </div>
+      <span class="db-kpi-n">{{ candidaturesEnAttente }}</span>
+      <div class="db-tags-row">
+        <span class="db-tag orange" *ngIf="candidaturesEnAttente > 0">À traiter</span>
+        <span class="db-tag muted" *ngIf="candidaturesEnAttente === 0">À traiter</span>
+      </div>
+    </div>
+
+    <div class="db-kpi" (click)="goList.emit()">
+      <div class="db-kpi-label-row">
+        <span class="db-kpi-l">Offres publiées</span>
+        <div class="db-kpi-icon slate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+      </div>
+      <span class="db-kpi-n">{{ totalOffres }}</span>
+      <div class="db-tags-row">
+        <span class="db-tag blue">{{ disponiblesCount }} disponibles</span>
+      </div>
+    </div>
+
+    <div class="db-kpi">
+      <div class="db-kpi-label-row">
+        <span class="db-kpi-l">CV déposés</span>
+        <div class="db-kpi-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </div>
+      </div>
+      <span class="db-kpi-n">{{ cvCount }}</span>
+      <div class="db-tags-row">
+        <span class="db-tag green">PDF reçus</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLEAU CANDIDATURES (pleine largeur) -->
+  <div class="db-card">
+    <div class="db-card-head">
+      <span class="db-card-title">Dernières candidatures</span>
+      <button class="db-link" (click)="goCandidatures.emit()">Voir tout →</button>
+    </div>
+    <div class="db-empty" *ngIf="dernieresCandidatures.length === 0">
+      <p>Aucune candidature</p>
+    </div>
+    <table class="db-table" *ngIf="dernieresCandidatures.length > 0">
+      <thead>
+      <tr><th>Candidat</th><th>Sujet</th><th>Filière</th><th>Statut</th></tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let c of dernieresCandidatures">
+        <td>
+          <div class="db-user">
+            <div class="db-av" [style.background]="getAvatarColor(c.nom)">{{ getInitials(c.nom) }}</div>
+            <span>{{ c.nom }}</span>
+          </div>
+        </td>
+        <td class="db-muted">{{ c.sujet }}</td>
+        <td>{{ c.filiere }}</td>
+        <td>
+            <span class="db-st"
+                  [class.wait]="c.statut==='EN_ATTENTE'"
+                  [class.ok]="isAccepte(c.statut)"
+                  [class.no]="c.statut==='REFUSEE'">
+              {{ c.statut==='EN_ATTENTE' ? 'En attente' : isAccepte(c.statut) ? 'Acceptée' : 'Refusée' }}
+            </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STATS -->
+  <div class="db-stats">
+
+    <!-- Répartition candidatures donut -->
+    <div class="db-card">
+      <div class="db-card-head"><span class="db-card-title">Répartition candidatures</span></div>
+      <div class="db-donut-wrap">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#f1f5f9" stroke-width="14"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#F57C00" stroke-width="14"
+                  stroke-linecap="butt"
+                  [attr.stroke-dasharray]="candidaturesCount > 0 ? ((candidaturesEnAttente/candidaturesCount)*263.9) + ' 263.9' : '0 263.9'"
+                  transform="rotate(-90 55 55)"/>
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#374151" stroke-width="14"
+                  stroke-linecap="butt"
+                  [attr.stroke-dasharray]="candidaturesCount > 0 ? ((candidaturesAcceptees/candidaturesCount)*263.9) + ' 263.9' : '0 263.9'"
+                  [attr.transform]="'rotate(' + (-90 + (candidaturesCount > 0 ? (candidaturesEnAttente/candidaturesCount)*360 : 0)) + ' 55 55)'"/>
+          <text x="55" y="50" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="Inter,sans-serif" font-weight="600">Total</text>
+          <text x="55" y="66" text-anchor="middle" font-size="22" fill="#0f172a" font-family="Inter,sans-serif" font-weight="900">{{ candidaturesCount }}</text>
+        </svg>
+        <div class="db-donut-legend">
+          <div class="db-dleg"><span class="db-dleg-dot" style="background:#F57C00"></span><span class="db-dleg-l">En attente</span><strong>{{ candidaturesEnAttente }}</strong></div>
+          <div class="db-dleg"><span class="db-dleg-dot" style="background:#374151"></span><span class="db-dleg-l">Acceptées</span><strong>{{ candidaturesAcceptees }}</strong></div>
+          <div class="db-dleg"><span class="db-dleg-dot" style="background:#d1d5db"></span><span class="db-dleg-l">Refusées</span><strong>{{ candidaturesRefusees }}</strong></div>
+        </div>
+      </div>
+      <div class="db-sep"></div>
+      <div class="db-kpi-mini-row">
+        <div class="db-kpi-mini"><span class="db-kpi-mini-v orange">{{ tauxAcceptation }}%</span><span class="db-kpi-mini-l">Acceptation</span></div>
+        <div class="db-kpi-mini"><span class="db-kpi-mini-v">{{ tauxRefus }}%</span><span class="db-kpi-mini-l">Refus</span></div>
+        <div class="db-kpi-mini"><span class="db-kpi-mini-v">{{ ratioCandSujet }}</span><span class="db-kpi-mini-l">Cand./sujet</span></div>
+      </div>
+    </div>
+
+    <!-- Par filière donut -->
+    <div class="db-card">
+      <div class="db-card-head"><span class="db-card-title">Par filière</span></div>
+      <div class="db-donut-wrap" *ngIf="repartitionFilieres.length > 0">
+        <svg class="db-donut-svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" stroke-width="14"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#F57C00" stroke-width="14"
+                  [attr.stroke-dasharray]="(repartitionFilieres[0]?.pct || 0) * 2.388 + ' 238.8'"
+                  stroke-linecap="butt" transform="rotate(-90 50 50)"/>
+          <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a" font-family="Inter,sans-serif">{{ repartitionFilieres[0]?.pct || 0 }}%</text>
+          <text x="50" y="60" text-anchor="middle" font-size="7" fill="#9ca3af" font-family="Inter,sans-serif">{{ repartitionFilieres[0]?.nom }}</text>
+        </svg>
+        <div class="db-donut-legend">
+          <div class="db-donut-leg" *ngFor="let f of repartitionFilieres; let i = index">
+            <span class="db-donut-dot" [style.background]="i===0?'#F57C00':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
+            <span class="db-donut-name">{{ f.nom }}</span>
+            <span class="db-donut-pct">{{ f.pct }}%</span>
+            <span class="db-donut-cnt">{{ f.count }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="db-empty-sm" *ngIf="repartitionFilieres.length === 0">Aucune donnée</p>
+    </div>
+
+    <!-- Par cycle donut -->
+    <div class="db-card">
+      <div class="db-card-head"><span class="db-card-title">Par cycle</span></div>
+      <div class="db-donut-wrap" *ngIf="repartitionCycles.length > 0">
+        <svg class="db-donut-svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" stroke-width="14"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#F57C00" stroke-width="14"
+                  [attr.stroke-dasharray]="(repartitionCycles[0]?.pct || 0) * 2.388 + ' 238.8'"
+                  stroke-linecap="butt" transform="rotate(-90 50 50)"/>
+          <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a" font-family="Inter,sans-serif">{{ repartitionCycles[0]?.pct || 0 }}%</text>
+          <text x="50" y="60" text-anchor="middle" font-size="7" fill="#9ca3af" font-family="Inter,sans-serif">{{ repartitionCycles[0]?.nom }}</text>
+        </svg>
+        <div class="db-donut-legend">
+          <div class="db-donut-leg" *ngFor="let c of repartitionCycles; let i = index">
+            <span class="db-donut-dot" [style.background]="i===0?'#F57C00':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
+            <span class="db-donut-name">{{ c.nom }}</span>
+            <span class="db-donut-pct">{{ c.pct }}%</span>
+            <span class="db-donut-cnt">{{ c.count }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="db-empty-sm" *ngIf="repartitionCycles.length === 0">Aucune donnée</p>
+    </div>
+
+    <!-- Top sujets -->
+    <div class="db-card">
+      <div class="db-card-head"><span class="db-card-title">Top sujets</span></div>
+      <div class="db-ranking" *ngIf="topSujets.length > 0">
+        <div class="db-rank-row" *ngFor="let s of topSujets; let i = index">
+          <span class="db-rank-pos" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">{{ i + 1 }}</span>
+          <span class="db-rank-titre">{{ s.titre }}</span>
+          <div class="db-rank-bar-wrap">
+            <div class="db-rank-bar">
+              <div class="db-rank-fill" [style.width.%]="topSujets[0].count > 0 ? (s.count/topSujets[0].count*100) : 0"></div>
+            </div>
+            <span class="db-rank-n">{{ s.count }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="db-empty-sm" *ngIf="topSujets.length === 0">Aucune donnée</p>
+    </div>
+
+  </div>
+
+  <!-- SUJETS -->
+  <div class="db-card">
+    <div class="db-card-head">
+      <span class="db-card-title">Sujets de stage</span>
+      <button class="db-link" (click)="goList.emit()">Gérer →</button>
+    </div>
+    <div class="db-sujets" *ngIf="offres.length > 0">
+      <div class="db-sujet" *ngFor="let o of offres | slice:0:6">
+        <div class="db-sujet-dot" [class.open]="o.estDisponible"></div>
+        <div class="db-sujet-info">
+          <span class="db-sujet-t">{{ o.titre }}</span>
+          <span class="db-sujet-s">{{ o.filiereCible }} · {{ o.cycleCible }}</span>
+        </div>
+        <span class="db-sujet-st" [class.open]="o.estDisponible" [class.closed]="!o.estDisponible">
+          {{ o.estDisponible ? 'Ouvert' : 'Fermé' }}
+        </span>
+      </div>
+    </div>
+    <p class="db-empty-sm" *ngIf="offres.length === 0">Aucun sujet publié</p>
+  </div>
+
+</div>

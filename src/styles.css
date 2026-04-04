@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --asm-orange: #F57C00;
+  --asm-bg: #F0F2F5;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+  background: var(--asm-bg);
+  color: #1a202c;
+}
+
+/* Force sidebar active item style */
+app-sidebar .sidebar-item.active {
+  background: #F57C00 !important;
+  color: #ffffff !important;
+}
+app-sidebar .sidebar-item:hover:not(.active) {
+  background: #FFF4ED !important;
+  color: #F57C00 !important;
+}
