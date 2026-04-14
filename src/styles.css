@@ -2,16 +2,21 @@
 
 :root {
   --asm-orange: #F57C00;
-  --asm-bg: #F0F2F5;
+  --asm-bg: #ffffff;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Outfit', sans-serif;
-  background: var(--asm-bg);
+  background: #ffffff;
   color: #1a202c;
 }
 
