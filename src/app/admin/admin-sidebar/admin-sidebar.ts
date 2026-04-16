@@ -6,19 +6,12 @@ import { Router, RouterModule } from '@angular/router';
   selector: 'app-admin-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './admin-sidebar.html',       // ✅ corrigé
-  styleUrls: ['./admin-sidebar.css']         // ✅ corrigé
+  templateUrl: './admin-sidebar.html',
+  styleUrls: ['./admin-sidebar.css']
 })
 export class AdminSidebarComponent {
 
   isCollapsed = false;
-
-  menuItems = [
-    { label: 'Tableau de bord',  route: '/admin/dashboard',    icon: 'grid'     },
-    { label: 'Utilisateurs',     route: '/admin/utilisateurs', icon: 'users'    },
-    { label: 'Paramètres',       route: '/admin/parametres',   icon: 'settings' },
-    { label: "Demandes d'accès", route: '/admin/demandes',     icon: 'file'     }
-  ];
 
   constructor(private router: Router) {}
 

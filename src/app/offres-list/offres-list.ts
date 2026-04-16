@@ -25,20 +25,54 @@ export class OffresListComponent {
   searchFocused = false;
   viewMode: 'table' | 'cards' = 'table';
 
+  showDropdown  = false;
+  activeFilter: 'all' | 'open' | 'closed' = 'all';
+
+  // ── View ──────────────────────────────────────────
+  setView(mode: 'table' | 'cards'): void { this.viewMode = mode; }
+  isTableView(): boolean { return this.viewMode === 'table'; }
+  isCardsView(): boolean { return this.viewMode === 'cards'; }
+
+  // ── Filtre ────────────────────────────────────────
+  setFilter(f: 'all' | 'open' | 'closed'): void {
+    this.activeFilter = f;
+    this.showDropdown = false;
+  }
+
+  get filterLabel(): string {
+    if (this.activeFilter === 'open')   return 'Ouvertes';
+    if (this.activeFilter === 'closed') return 'Fermées';
+    return 'Tous';
+  }
+
+  // ── KPIs ─────────────────────────────────────────
   get fermeesCount(): number {
     return this.totalOffres - this.disponiblesCount;
   }
 
-  get filteredOffres(): OffreStage[] {
-    const q = this.searchQuery.toLowerCase().trim();
-    if (!q) return [...this.offres];
-    return this.offres.filter(o =>
-      o.titre.toLowerCase().includes(q) ||
-      o.description.toLowerCase().includes(q) ||
-      o.competences.some((c: string) => c.toLowerCase().includes(q))
-    );
+  get filiereCount(): number {
+    return new Set(this.offres.map(o => o.filiereCible)).size;
   }
 
+  // ── Liste filtrée ─────────────────────────────────
+  get filteredOffres(): OffreStage[] {
+    let list = [...this.offres];
+
+    if (this.activeFilter === 'open')   list = list.filter(o =>  o.estDisponible);
+    if (this.activeFilter === 'closed') list = list.filter(o => !o.estDisponible);
+
+    const q = this.searchQuery.toLowerCase().trim();
+    if (q) {
+      list = list.filter(o =>
+        o.titre.toLowerCase().includes(q) ||
+        o.description.toLowerCase().includes(q) ||
+        o.competences.some((c: string) => c.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }
+
+  // ── Helpers ───────────────────────────────────────
   formatIndex(i: number): string {
     const n = i + 1;
     return n < 10 ? '0' + n : '' + n;

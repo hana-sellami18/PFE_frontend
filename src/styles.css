@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --asm-orange: #F57C00;
+  --asm-orange: #C2580F;
   --asm-bg: #ffffff;
 }
 
@@ -17,15 +17,40 @@ html, body {
   padding: 0;
   font-family: 'Outfit', sans-serif;
   background: #ffffff;
-  color: #1a202c;
+  color: #0F172A;
+}
+
+body, html, app-root {
+  background: #ffffff !important;
+}
+
+app-profil, app-dashboard, app-candidatures,
+app-stagiaires, app-encadrants, app-evaluations,
+app-archives, app-parametres, app-welcome {
+  display: block;
+  background: #ffffff !important;
+  min-height: 100vh;
 }
 
 /* Force sidebar active item style */
 app-sidebar .sidebar-item.active {
-  background: #F57C00 !important;
+  background: #C2580F !important;
   color: #ffffff !important;
 }
 app-sidebar .sidebar-item:hover:not(.active) {
   background: #FFF4ED !important;
-  color: #F57C00 !important;
+  color: #C2580F !important;
+}
+
+/* Force login & register text colors */
+app-login .auth-title,
+app-login .auth-label,
+app-login .auth-input,
+app-login .auth-subtitle,
+app-login .auth-remember span,
+app-register .auth-title,
+app-register .auth-label,
+app-register .auth-input,
+app-register .auth-subtitle {
+  color: #0F172A !important;
 }

@@ -82,7 +82,7 @@
 
   </div>
 
-  <!-- TABLEAU CANDIDATURES (pleine largeur) -->
+  <!-- TABLEAU CANDIDATURES -->
   <div class="db-card">
     <div class="db-card-head">
       <span class="db-card-title">Dernières candidatures</span>
@@ -127,7 +127,7 @@
       <div class="db-donut-wrap">
         <svg width="110" height="110" viewBox="0 0 110 110">
           <circle cx="55" cy="55" r="42" fill="none" stroke="#f1f5f9" stroke-width="14"/>
-          <circle cx="55" cy="55" r="42" fill="none" stroke="#F57C00" stroke-width="14"
+          <circle cx="55" cy="55" r="42" fill="none" stroke="#C2580F" stroke-width="14"
                   stroke-linecap="butt"
                   [attr.stroke-dasharray]="candidaturesCount > 0 ? ((candidaturesEnAttente/candidaturesCount)*263.9) + ' 263.9' : '0 263.9'"
                   transform="rotate(-90 55 55)"/>
@@ -139,7 +139,7 @@
           <text x="55" y="66" text-anchor="middle" font-size="22" fill="#0f172a" font-family="Inter,sans-serif" font-weight="900">{{ candidaturesCount }}</text>
         </svg>
         <div class="db-donut-legend">
-          <div class="db-dleg"><span class="db-dleg-dot" style="background:#F57C00"></span><span class="db-dleg-l">En attente</span><strong>{{ candidaturesEnAttente }}</strong></div>
+          <div class="db-dleg"><span class="db-dleg-dot" style="background:#C2580F"></span><span class="db-dleg-l">En attente</span><strong>{{ candidaturesEnAttente }}</strong></div>
           <div class="db-dleg"><span class="db-dleg-dot" style="background:#374151"></span><span class="db-dleg-l">Acceptées</span><strong>{{ candidaturesAcceptees }}</strong></div>
           <div class="db-dleg"><span class="db-dleg-dot" style="background:#d1d5db"></span><span class="db-dleg-l">Refusées</span><strong>{{ candidaturesRefusees }}</strong></div>
         </div>
@@ -158,7 +158,7 @@
       <div class="db-donut-wrap" *ngIf="repartitionFilieres.length > 0">
         <svg class="db-donut-svg" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" stroke-width="14"/>
-          <circle cx="50" cy="50" r="38" fill="none" stroke="#F57C00" stroke-width="14"
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#C2580F" stroke-width="14"
                   [attr.stroke-dasharray]="(repartitionFilieres[0]?.pct || 0) * 2.388 + ' 238.8'"
                   stroke-linecap="butt" transform="rotate(-90 50 50)"/>
           <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a" font-family="Inter,sans-serif">{{ repartitionFilieres[0]?.pct || 0 }}%</text>
@@ -166,7 +166,7 @@
         </svg>
         <div class="db-donut-legend">
           <div class="db-donut-leg" *ngFor="let f of repartitionFilieres; let i = index">
-            <span class="db-donut-dot" [style.background]="i===0?'#F57C00':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
+            <span class="db-donut-dot" [style.background]="i===0?'#C2580F':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
             <span class="db-donut-name">{{ f.nom }}</span>
             <span class="db-donut-pct">{{ f.pct }}%</span>
             <span class="db-donut-cnt">{{ f.count }}</span>
@@ -182,7 +182,7 @@
       <div class="db-donut-wrap" *ngIf="repartitionCycles.length > 0">
         <svg class="db-donut-svg" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" stroke-width="14"/>
-          <circle cx="50" cy="50" r="38" fill="none" stroke="#F57C00" stroke-width="14"
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#C2580F" stroke-width="14"
                   [attr.stroke-dasharray]="(repartitionCycles[0]?.pct || 0) * 2.388 + ' 238.8'"
                   stroke-linecap="butt" transform="rotate(-90 50 50)"/>
           <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="900" fill="#0f172a" font-family="Inter,sans-serif">{{ repartitionCycles[0]?.pct || 0 }}%</text>
@@ -190,7 +190,7 @@
         </svg>
         <div class="db-donut-legend">
           <div class="db-donut-leg" *ngFor="let c of repartitionCycles; let i = index">
-            <span class="db-donut-dot" [style.background]="i===0?'#F57C00':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
+            <span class="db-donut-dot" [style.background]="i===0?'#C2580F':i===1?'#374151':i===2?'#9ca3af':'#d1d5db'"></span>
             <span class="db-donut-name">{{ c.nom }}</span>
             <span class="db-donut-pct">{{ c.pct }}%</span>
             <span class="db-donut-cnt">{{ c.count }}</span>

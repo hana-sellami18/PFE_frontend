@@ -1,18 +1,7 @@
 <div class="sidebar" [class.collapsed]="isCollapsed">
 
-  <!-- LOGO -->
-  <div class="sidebar-logo">
-    <div class="logo-icon">A</div>
-    <div class="logo-text" *ngIf="!isCollapsed">
-      <span class="logo-title">ASM</span>
-      <span class="logo-sub">All Soft Multimedia</span>
-    </div>
-  </div>
-
-  <!-- MENU -->
   <nav class="sidebar-nav">
 
-    <!-- Tableau de bord -->
     <a class="nav-item" [class.active]="isActive('/admin/dashboard')"
        routerLink="/admin/dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -24,7 +13,6 @@
       <span *ngIf="!isCollapsed">Tableau de bord</span>
     </a>
 
-    <!-- Utilisateurs -->
     <a class="nav-item" [class.active]="isActive('/admin/utilisateurs')"
        routerLink="/admin/utilisateurs">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -36,7 +24,6 @@
       <span *ngIf="!isCollapsed">Utilisateurs</span>
     </a>
 
-    <!-- Paramètres -->
     <a class="nav-item" [class.active]="isActive('/admin/parametres')"
        routerLink="/admin/parametres">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -46,7 +33,6 @@
       <span *ngIf="!isCollapsed">Paramètres</span>
     </a>
 
-    <!-- Demandes d'accès -->
     <a class="nav-item" [class.active]="isActive('/admin/demandes')"
        routerLink="/admin/demandes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -57,7 +43,6 @@
       <span *ngIf="!isCollapsed">Demandes d'accès</span>
     </a>
 
-    <!-- Profil -->
     <a class="nav-item" [class.active]="isActive('/admin/profil')"
        routerLink="/admin/profil">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -69,7 +54,6 @@
 
   </nav>
 
-  <!-- TOGGLE COLLAPSE -->
   <button class="collapse-btn" (click)="toggle()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          [style.transform]="isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'">
@@ -77,7 +61,6 @@
     </svg>
   </button>
 
-  <!-- LOGOUT -->
   <div class="sidebar-footer">
     <button class="logout-btn" (click)="logout()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

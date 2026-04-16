@@ -1,14 +1,13 @@
-/* ===== ASM WELCOME PAGE — VERSION PRO ===== */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --asm-orange:          #F5821F;
-  --asm-orange-dark:     #E06B10;
-  --asm-orange-gradient: linear-gradient(135deg, #F5821F, #E06B10);
-  --asm-btn-shadow:      0 4px 15px rgba(245, 130, 31, 0.35);
+  --asm-orange:          #C2580F;
+  --asm-orange-dark:     #A84A0C;
+  --asm-orange-gradient: linear-gradient(135deg, #C2580F, #A84A0C);
+  --asm-btn-shadow:      0 4px 15px rgba(194, 88, 15, 0.35);
   --radius-flutter:      30px;
 
-  --bg:       #F2F4F7;
+  --bg:       #ffffff;
   --white:    #FFFFFF;
   --dark:     #0F172A;
   --mid:      #475569;
@@ -28,22 +27,18 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ===== WRAPPER ===== */
 .welcome-wrapper {
   min-height: 100vh;
-  background: var(--bg);
+  background: #ffffff;
   font-family: var(--font);
   padding: 24px 24px 48px;
   animation: fadeUp 0.4s ease both;
-
-  /* ✅ Sidebar expanded = 260px */
   margin-left: 260px;
   width: calc(100% - 260px);
   transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width       0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ✅ Sidebar collapsed = 72px */
 .welcome-wrapper.sidebar-collapsed {
   margin-left: 72px;
   width: calc(100% - 72px);
@@ -62,7 +57,6 @@
   gap: 14px;
 }
 
-/* ===== TOPBAR ===== */
 .welcome-topbar {
   display: flex;
   align-items: center;
@@ -101,7 +95,6 @@
 }
 .welcome-platform-chip svg { stroke: var(--asm-orange); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
 
-/* ===== HERO ===== */
 .welcome-hero {
   background: var(--asm-orange-gradient);
   border-radius: 18px;
@@ -112,7 +105,7 @@
   gap: 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(245, 130, 31, 0.30);
+  box-shadow: 0 8px 32px rgba(194, 88, 15, 0.30);
   animation: fadeUp 0.4s 0.05s ease both;
 }
 
@@ -198,7 +191,6 @@
   backdrop-filter: blur(6px); border: 1.5px solid rgba(255,255,255,0.35);
 }
 
-/* ===== KPI ROW ===== */
 .kpi-row {
   display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 14px; animation: fadeUp 0.4s 0.1s ease both;
@@ -254,13 +246,11 @@
 .kpi-purple .kpi-action { color: var(--purple); }
 .kpi-card:hover .kpi-action { opacity: 1; }
 
-/* ===== BOTTOM ROW ===== */
 .welcome-bottom-row {
   display: grid; grid-template-columns: 1fr 360px;
   gap: 14px; animation: fadeUp 0.4s 0.15s ease both;
 }
 
-/* ===== ACTIVITÉ ===== */
 .activity-section {
   background: var(--white); border-radius: var(--r);
   padding: 18px 16px; box-shadow: var(--sh);
@@ -317,7 +307,6 @@
 .activity-empty p    { font-size: 14px; font-weight: 700; color: var(--mid); }
 .activity-empty span { font-size: 12px; font-weight: 500; color: var(--muted); }
 
-/* ===== QUICK ACTIONS ===== */
 .quick-actions-section {
   background: var(--white); border-radius: var(--r);
   padding: 18px 16px; box-shadow: var(--sh);
@@ -355,10 +344,8 @@
 .quick-action-arrow { color: var(--muted); opacity: 0; transition: opacity var(--t); flex-shrink: 0; }
 .quick-action-btn:hover .quick-action-arrow { opacity: 1; }
 
-/* ===== FOOTER ===== */
 .welcome-footer-note { font-size: 12px; font-weight: 600; color: var(--muted); text-align: center; letter-spacing: 0.3px; animation: fadeUp 0.4s 0.25s ease both; }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 960px) {
   .kpi-row            { grid-template-columns: repeat(2, 1fr); }
   .welcome-bottom-row { grid-template-columns: 1fr; }

@@ -10,6 +10,8 @@ import { GestionStagesComponent } from './gestion-stages/gestion-stages';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard';
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar';
+import { AdminTopbarComponent } from './admin/admin-topbar/admin-topbar';
+import { AdminLayoutComponent } from './admin/admin-layout/admin-layout';
 import { ListeUtilisateursComponent } from './admin/liste-utilisateurs/liste-utilisateurs';
 import { Parametres } from './admin/parametres/parametres';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile';
@@ -19,23 +21,23 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile';
     AppComponent,
     LoginComponent,
     Register
-    // ✅ tous les standalone retirés de declarations
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     GestionStagesComponent,
-    AdminDashboardComponent,      // ✅ standalone
-    AdminSidebarComponent,        // ✅ standalone
-    ListeUtilisateursComponent,   // ✅ standalone
-    Parametres,          // ✅ standalone — nom corrigé
-    AdminProfileComponent,        // ✅ standalone — nom corrigé
+    AdminDashboardComponent,
+    AdminSidebarComponent,
+    AdminTopbarComponent,
+    AdminLayoutComponent,
+    ListeUtilisateursComponent,
+    Parametres,
+    AdminProfileComponent,
     RouterModule.forRoot([
       { path: 'login',    component: LoginComponent },
       { path: 'register', component: Register },
 
-      // ─── ESPACE RH ─────────────────────────────────────
       {
         path: 'gestion-stages',
         component: GestionStagesComponent,
@@ -54,15 +56,14 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile';
         ]
       },
 
-      // ─── ESPACE ADMIN ───────────────────────────────────
       {
         path: 'admin',
+        component: AdminLayoutComponent,   // ← layout parent
         children: [
           { path: 'dashboard',    component: AdminDashboardComponent    },
           { path: 'utilisateurs', component: ListeUtilisateursComponent },
-          { path: 'parametres',   component: Parametres        },
+          { path: 'parametres',   component: Parametres                 },
           { path: 'profil',       component: AdminProfileComponent      },
-          // { path: 'demandes', component: DemandesAccesComponent },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]
       },

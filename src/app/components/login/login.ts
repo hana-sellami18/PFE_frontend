@@ -45,7 +45,9 @@ export class LoginComponent {
         localStorage.setItem('token',      response.token);
         localStorage.setItem('email',      response.email);
         localStorage.setItem('role',       response.role);
-        localStorage.setItem('nomComplet', response.nomComplet);
+        localStorage.setItem('nom',        response.nom        || '');
+        localStorage.setItem('prenom',     response.prenom     || '');
+        localStorage.setItem('nomComplet', (response.prenom + ' ' + response.nom).trim());
         localStorage.setItem('telephone',  response.telephone  || '');
         localStorage.setItem('userId',     response.id?.toString() || '');
 

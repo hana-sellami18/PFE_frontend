@@ -1,297 +1,267 @@
-<div class="admin-layout">
-  <app-admin-sidebar></app-admin-sidebar>
+<div class="main-content">
 
-  <div class="main-content">
+  <div class="alert alert--success" *ngIf="successMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    {{ successMessage }}
+  </div>
+  <div class="alert alert--error" *ngIf="errorMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    {{ errorMessage }}
+  </div>
 
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1 class="page-title">Mon Profil</h1>
-        <p class="page-subtitle">Gérez vos informations personnelles et votre sécurité</p>
-      </div>
-      <div class="topbar-right">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-          <input type="text" placeholder="Rechercher..." />
+  <div class="profile-grid">
+
+    <!-- COLONNE GAUCHE -->
+    <div class="left-col">
+
+      <div class="avatar-card">
+        <div class="avatar-circle">{{ getInitiales() }}</div>
+        <h2 class="avatar-name">{{ profile.prenom }} {{ profile.nom }}</h2>
+        <span class="avatar-role">Administrateur</span>
+        <span class="avatar-email">{{ profile.email }}</span>
+        <div class="avatar-divider"></div>
+        <div class="avatar-meta">
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>Membre depuis {{ profile.dateCreation }}</span>
+          </div>
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Dernière connexion : {{ profile.derniereConnexion }}</span>
+          </div>
         </div>
-        <button class="notif-btn">
+      </div>
+
+      <div class="quick-stats">
+        <h3 class="section-label">Activité</h3>
+        <div class="quick-stat-item">
+          <div class="quick-stat-icon quick-stat-icon--orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+          </div>
+          <div>
+            <div class="quick-stat-value">{{ stats.comptesCreees }}</div>
+            <div class="quick-stat-label">Comptes créés</div>
+          </div>
+        </div>
+        <div class="quick-stat-item">
+          <div class="quick-stat-icon quick-stat-icon--grey">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-4-4h-1"/>
+              <circle cx="19" cy="7" r="2"/>
+            </svg>
+          </div>
+          <div>
+            <div class="quick-stat-value">{{ stats.utilisateursActifs }}</div>
+            <div class="quick-stat-label">Utilisateurs actifs</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <div class="right-col">
+
+      <div class="tabs">
+        <button class="tab-btn" [class.active]="activeSection === 'info'"
+                (click)="activeSection = 'info'">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
           </svg>
-          <span class="notif-badge">{{ notificationCount }}</span>
+          Informations personnelles
+        </button>
+        <button class="tab-btn" [class.active]="activeSection === 'password'"
+                (click)="activeSection = 'password'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Sécurité
         </button>
       </div>
-    </div>
 
-    <div class="alert alert--success" *ngIf="successMessage">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-      {{ successMessage }}
-    </div>
-    <div class="alert alert--error" *ngIf="errorMessage">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      {{ errorMessage }}
-    </div>
-
-    <div class="profile-grid">
-
-      <!-- COLONNE GAUCHE -->
-      <div class="left-col">
-
-        <div class="avatar-card">
-          <div class="avatar-circle">{{ getInitiales() }}</div>
-          <h2 class="avatar-name">{{ profile.prenom }} {{ profile.nom }}</h2>
-          <span class="avatar-role">Administrateur</span>
-          <span class="avatar-email">{{ profile.email }}</span>
-          <div class="avatar-divider"></div>
-          <div class="avatar-meta">
-            <div class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <span>Membre depuis {{ profile.dateCreation }}</span>
+      <div class="form-card" *ngIf="activeSection === 'info'">
+        <div class="form-card-header">
+          <h3>Informations personnelles</h3>
+          <p>Modifiez vos informations de base</p>
+        </div>
+        <div class="form-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom</label>
+              <input type="text" [(ngModel)]="editProfile.nom" />
             </div>
-            <div class="meta-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              <span>Dernière connexion : {{ profile.derniereConnexion }}</span>
+            <div class="form-group">
+              <label>Prénom</label>
+              <input type="text" [(ngModel)]="editProfile.prenom" />
             </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="editProfile.email" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input type="tel" [(ngModel)]="editProfile.telephone" />
+            </div>
+            <div class="form-group">
+              <label>Poste</label>
+              <input type="text" [(ngModel)]="editProfile.poste" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Rôle</label>
+            <input type="text" value="Administrateur" disabled class="input-disabled" />
           </div>
         </div>
-
-        <div class="quick-stats">
-          <h3 class="section-label">Activité</h3>
-          <div class="quick-stat-item">
-            <div class="quick-stat-icon quick-stat-icon--orange">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <line x1="19" y1="8" x2="19" y2="14"/>
-                <line x1="22" y1="11" x2="16" y2="11"/>
-              </svg>
-            </div>
-            <div>
-              <div class="quick-stat-value">{{ stats.comptesCreees }}</div>  <!-- ✅ corrigé -->
-              <div class="quick-stat-label">Comptes créés</div>
-            </div>
-          </div>
-          <div class="quick-stat-item">
-            <div class="quick-stat-icon quick-stat-icon--grey">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-4-4h-1"/>
-                <circle cx="19" cy="7" r="2"/>
-              </svg>
-            </div>
-            <div>
-              <div class="quick-stat-value">{{ stats.utilisateursActifs }}</div>
-              <div class="quick-stat-label">Utilisateurs actifs</div>
-            </div>
-          </div>
+        <div class="form-footer">
+          <button class="btn-save" (click)="saveProfile()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Enregistrer les modifications
+          </button>
         </div>
-
       </div>
 
-      <!-- COLONNE DROITE -->
-      <div class="right-col">
-
-        <div class="tabs">
-          <button class="tab-btn" [class.active]="activeSection === 'info'"
-                  (click)="activeSection = 'info'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            Informations personnelles
-          </button>
-          <button class="tab-btn" [class.active]="activeSection === 'password'"
-                  (click)="activeSection = 'password'">
+      <div class="form-card" *ngIf="activeSection === 'password'">
+        <div class="form-card-header">
+          <h3>Changer le mot de passe</h3>
+          <p>Choisissez un mot de passe fort d'au moins 6 caractères</p>
+        </div>
+        <div class="form-body">
+          <div class="form-group">
+            <label>Mot de passe actuel</label>
+            <div class="input-password">
+              <input [type]="showAncien ? 'text' : 'password'"
+                     [(ngModel)]="passwordForm.ancien"
+                     placeholder="••••••••" />
+              <button class="eye-btn" (click)="showAncien = !showAncien">
+                <svg *ngIf="!showAncien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="showAncien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nouveau mot de passe</label>
+            <div class="input-password">
+              <input [type]="showNouveau ? 'text' : 'password'"
+                     [(ngModel)]="passwordForm.nouveau"
+                     placeholder="••••••••" />
+              <button class="eye-btn" (click)="showNouveau = !showNouveau">
+                <svg *ngIf="!showNouveau" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="showNouveau" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirmer le nouveau mot de passe</label>
+            <div class="input-password">
+              <input [type]="showConfirmer ? 'text' : 'password'"
+                     [(ngModel)]="passwordForm.confirmer"
+                     placeholder="••••••••" />
+              <button class="eye-btn" (click)="showConfirmer = !showConfirmer">
+                <svg *ngIf="!showConfirmer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="showConfirmer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-footer">
+          <button class="btn-save" (click)="savePassword()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            Sécurité
+            Modifier le mot de passe
           </button>
         </div>
-
-        <!-- SECTION INFO -->
-        <div class="form-card" *ngIf="activeSection === 'info'">
-          <div class="form-card-header">
-            <h3>Informations personnelles</h3>
-            <p>Modifiez vos informations de base</p>
-          </div>
-          <div class="form-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nom</label>
-                <input type="text" [(ngModel)]="editProfile.nom" />
-              </div>
-              <div class="form-group">
-                <label>Prénom</label>
-                <input type="text" [(ngModel)]="editProfile.prenom" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" [(ngModel)]="editProfile.email" />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Téléphone</label>
-                <input type="tel" [(ngModel)]="editProfile.telephone" />
-              </div>
-              <div class="form-group">
-                <label>Poste</label>
-                <input type="text" [(ngModel)]="editProfile.poste" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Rôle</label>
-              <input type="text" value="Administrateur" disabled class="input-disabled" />
-            </div>
-          </div>
-          <div class="form-footer">
-            <button class="btn-save" (click)="saveProfile()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                <polyline points="17 21 17 13 7 13 7 21"/>
-                <polyline points="7 3 7 8 15 8"/>
-              </svg>
-              Enregistrer les modifications
-            </button>
-          </div>
-        </div>
-
-        <!-- SECTION PASSWORD -->
-        <div class="form-card" *ngIf="activeSection === 'password'">
-          <div class="form-card-header">
-            <h3>Changer le mot de passe</h3>
-            <p>Choisissez un mot de passe fort d'au moins 6 caractères</p>
-          </div>
-          <div class="form-body">
-            <div class="form-group">
-              <label>Mot de passe actuel</label>
-              <div class="input-password">
-                <input [type]="showAncien ? 'text' : 'password'"
-                       [(ngModel)]="passwordForm.ancien"
-                       placeholder="••••••••" />
-                <button class="eye-btn" (click)="showAncien = !showAncien">
-                  <svg *ngIf="!showAncien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <svg *ngIf="showAncien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Nouveau mot de passe</label>
-              <div class="input-password">
-                <input [type]="showNouveau ? 'text' : 'password'"
-                       [(ngModel)]="passwordForm.nouveau"
-                       placeholder="••••••••" />
-                <button class="eye-btn" (click)="showNouveau = !showNouveau">
-                  <svg *ngIf="!showNouveau" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <svg *ngIf="showNouveau" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Confirmer le nouveau mot de passe</label>
-              <div class="input-password">
-                <input [type]="showConfirmer ? 'text' : 'password'"
-                       [(ngModel)]="passwordForm.confirmer"
-                       placeholder="••••••••" />
-                <button class="eye-btn" (click)="showConfirmer = !showConfirmer">
-                  <svg *ngIf="!showConfirmer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <svg *ngIf="showConfirmer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="form-footer">
-            <button class="btn-save" (click)="savePassword()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-              Modifier le mot de passe
-            </button>
-          </div>
-        </div>
-
-        <!-- ACTIVITE RECENTE -->
-        <div class="activity-card">
-          <h3 class="activity-title">Activité récente</h3>
-          <div class="activity-list">
-            <div class="activity-item" *ngFor="let a of activiteRecente">
-              <div class="activity-icon"
-                   [ngClass]="{
-                     'activity-icon--create': a.type === 'create',
-                     'activity-icon--edit':   a.type === 'edit',
-                     'activity-icon--delete': a.type === 'delete',
-                     'activity-icon--login':  a.type === 'login'
-                   }">
-                <svg *ngIf="a.type === 'create'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                <svg *ngIf="a.type === 'edit'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-                <svg *ngIf="a.type === 'delete'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                </svg>
-                <svg *ngIf="a.type === 'login'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                  <polyline points="10 17 15 12 10 7"/>
-                  <line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-              </div>
-              <div class="activity-info">
-                <span class="activity-action">{{ a.action }}</span>
-                <span class="activity-user">{{ a.utilisateur }}</span>
-              </div>
-              <span class="activity-date">{{ a.date }}</span>
-            </div>
-          </div>
-        </div>
-
       </div>
-    </div>
 
+      <div class="activity-card">
+        <h3 class="activity-title">Activité récente</h3>
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let a of activiteRecente">
+            <div class="activity-icon"
+                 [ngClass]="{
+                   'activity-icon--create': a.type === 'create',
+                   'activity-icon--edit':   a.type === 'edit',
+                   'activity-icon--delete': a.type === 'delete',
+                   'activity-icon--login':  a.type === 'login'
+                 }">
+              <svg *ngIf="a.type === 'create'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <svg *ngIf="a.type === 'edit'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <svg *ngIf="a.type === 'delete'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
+              <svg *ngIf="a.type === 'login'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+              </svg>
+            </div>
+            <div class="activity-info">
+              <span class="activity-action">{{ a.action }}</span>
+              <span class="activity-user">{{ a.utilisateur }}</span>
+            </div>
+            <span class="activity-date">{{ a.date }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

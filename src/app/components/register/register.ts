@@ -10,7 +10,8 @@ import { AuthService } from '../../services/auth';
 })
 export class Register {
   regData = {
-    nomComplet:    '',
+    nom:           '',
+    prenom:        '',
     email:         '',
     telephone:     '',
     dateNaissance: '',
@@ -20,16 +21,21 @@ export class Register {
 
   isLoading    = false;
   showPassword = false;
-  errors       = { nomComplet: '', email: '', password: '' };
+  errors       = { nom: '', prenom: '', email: '', password: '' };
 
   constructor(private router: Router, private authService: AuthService) {}
 
   onRegister() {
-    this.errors = { nomComplet: '', email: '', password: '' };
+    this.errors = { nom: '', prenom: '', email: '', password: '' };
     let hasError = false;
 
-    if (!this.regData.nomComplet.trim()) {
-      this.errors.nomComplet = 'Le nom complet est requis';
+    if (!this.regData.nom.trim()) {
+      this.errors.nom = 'Le nom est requis';
+      hasError = true;
+    }
+
+    if (!this.regData.prenom.trim()) {
+      this.errors.prenom = 'Le prénom est requis';
       hasError = true;
     }
 
@@ -60,7 +66,7 @@ export class Register {
           email:    this.regData.email,
           password: this.regData.password
         }).subscribe({
-          next: (loginResponse: any) => {
+          next: () => {
             this.isLoading = false;
             this.router.navigate(['/gestion-stages']);
           },

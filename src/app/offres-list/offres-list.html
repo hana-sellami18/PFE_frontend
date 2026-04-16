@@ -3,67 +3,131 @@
 
     <!-- ══ HERO ══ -->
     <div class="ol-hero">
-      <div class="ol-hero-left">
+      <div>
         <h1 class="ol-hero-title">Offres de <span class="ol-hero-accent">Stage</span></h1>
         <p class="ol-hero-desc">Gérez vos offres, suivez les statuts et pilotez vos recrutements.</p>
       </div>
-      <button class="ol-btn-primary" (click)="openForm.emit(undefined)">
-        <span class="ol-btn-icon">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-        </span>
-        Publier une offre
-      </button>
     </div>
 
-    <!-- ══ CONTROLES ══ -->
-    <div class="ol-controls">
-      <div class="ol-search" [class.ol-search--on]="searchFocused">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input
-          type="text" class="ol-search-input"
-          [(ngModel)]="searchQuery"
-          placeholder="Rechercher une offre, compétence…"
-          (focus)="searchFocused = true"
-          (blur)="searchFocused = false"/>
-        <button class="ol-search-x" *ngIf="searchQuery" (click)="searchQuery = ''">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    <!-- ══ KPI BANNER ══ -->
+    <div class="ol-stats-banner">
+
+      <div class="ol-kpi-card">
+        <div class="ol-kpi-icon gray">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
           </svg>
-        </button>
+        </div>
+        <div class="ol-kpi-info">
+          <span class="ol-kpi-value">{{ totalOffres }}</span>
+          <span class="ol-kpi-label">Total</span>
+        </div>
       </div>
-      <div class="ol-ctrl-sep"></div>
-      <div class="ol-view-toggle">
-        <button class="ol-view-btn" [class.ol-view-btn--on]="viewMode === 'table'" (click)="viewMode = 'table'" title="Vue tableau">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+
+      <div class="ol-kpi-card">
+        <div class="ol-kpi-icon orange">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
           </svg>
-        </button>
-        <button class="ol-view-btn" [class.ol-view-btn--on]="viewMode === 'cards'" (click)="viewMode = 'cards'" title="Vue cartes">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-          </svg>
-        </button>
+        </div>
+        <div class="ol-kpi-info">
+          <span class="ol-kpi-value">{{ disponiblesCount }}</span>
+          <span class="ol-kpi-label">Ouvertes</span>
+        </div>
       </div>
+
+      <div class="ol-kpi-card">
+        <div class="ol-kpi-icon gray">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="ol-kpi-info">
+          <span class="ol-kpi-value">{{ fermeesCount }}</span>
+          <span class="ol-kpi-label">Fermées</span>
+        </div>
+      </div>
+
+      <div class="ol-kpi-card">
+        <div class="ol-kpi-icon orange">
+          <svg viewBox="0 0 24 24">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="ol-kpi-info">
+          <span class="ol-kpi-value">{{ filiereCount }}</span>
+          <span class="ol-kpi-label">Filières</span>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══ VUE TABLEAU ══ -->
-    <div class="ol-table-wrap" *ngIf="viewMode === 'table'">
+    <div class="ol-table-wrap" *ngIf="isTableView()">
 
+      <div class="ol-table-header">
+        <span class="ol-table-title">Liste des offres</span>
+        <div class="ol-table-actions">
+
+          <!-- Search -->
+          <div class="ol-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              type="text" class="ol-search-input"
+              [(ngModel)]="searchQuery"
+              (focus)="searchFocused = true"
+              (blur)="searchFocused = false"
+              placeholder="Rechercher..."/>
+            <button class="ol-search-x" *ngIf="searchQuery" (click)="searchQuery = ''">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- View toggle -->
+          <div class="ol-view-toggle">
+            <button class="ol-view-btn" [class.ol-view-btn--on]="isTableView()" (click)="setView('table')" title="Vue tableau">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            </button>
+            <button class="ol-view-btn" [class.ol-view-btn--on]="isCardsView()" (click)="setView('cards')" title="Vue cartes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Bouton ajouter -->
+          <button class="ol-btn-primary" (click)="openForm.emit(undefined)">
+            <span>+</span> Publier une offre
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Colonnes -->
       <div class="ol-thead">
         <div class="ol-th">#</div>
         <div class="ol-th">Offre &amp; Compétences</div>
         <div class="ol-th">Filière</div>
         <div class="ol-th">Publiée</div>
         <div class="ol-th">Statut</div>
-        <div class="ol-th"></div>
+        <div class="ol-th">Actions</div>
       </div>
 
+      <!-- Lignes -->
       <div class="ol-tbody">
         <div class="ol-row"
              *ngFor="let offre of filteredOffres; let i = index"
@@ -77,7 +141,7 @@
 
           <div class="ol-td ol-td--main">
             <div class="ol-row-ico">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <rect x="2" y="7" width="20" height="14" rx="2"/>
                 <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
               </svg>
@@ -114,13 +178,13 @@
 
           <div class="ol-td ol-td--actions">
             <button class="ol-act" (click)="openForm.emit(offre)" title="Modifier">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
             </button>
             <button class="ol-act ol-act--del" (click)="onSupprimer(offre.id)" title="Supprimer">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6l-1 14H6L5 6"/>
                 <path d="M10 11v6m4-6v6"/>
@@ -128,32 +192,30 @@
             </button>
             <button class="ol-btn-voir" (click)="voirDetail.emit(offre)">
               Détails
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </button>
           </div>
+
         </div>
 
+        <!-- Empty state -->
         <div class="ol-empty" *ngIf="filteredOffres.length === 0">
           <div class="ol-empty-ico">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
           </div>
           <p class="ol-empty-title">Aucune offre trouvée</p>
           <p class="ol-empty-sub">Modifiez votre recherche ou publiez une nouvelle offre.</p>
           <button class="ol-btn-primary" style="margin-top:8px" (click)="openForm.emit(undefined)">
-            <span class="ol-btn-icon">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-            </span>
-            Publier une offre
+            <span>+</span> Publier une offre
           </button>
         </div>
       </div>
 
+      <!-- Footer -->
       <div class="ol-tfoot" *ngIf="filteredOffres.length > 0">
         <span class="ol-tfoot-txt">
           <strong>{{ filteredOffres.length }}</strong> offre{{ filteredOffres.length > 1 ? 's' : '' }} affichée{{ filteredOffres.length > 1 ? 's' : '' }}
@@ -164,10 +226,59 @@
           <span class="ol-leg-item"><i class="ol-leg-dot ol-leg-dot--red"></i>{{ fermeesCount }} fermée{{ fermeesCount > 1 ? 's' : '' }}</span>
         </div>
       </div>
+
     </div>
 
     <!-- ══ VUE CARDS ══ -->
-    <div class="ol-cards-wrap" *ngIf="viewMode === 'cards'">
+    <div class="ol-cards-wrap" *ngIf="isCardsView()">
+
+      <!-- Header cards -->
+      <div class="ol-table-wrap">
+        <div class="ol-table-header">
+          <span class="ol-table-title">Liste des offres</span>
+          <div class="ol-table-actions">
+
+            <div class="ol-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input
+                type="text" class="ol-search-input"
+                [(ngModel)]="searchQuery"
+                (focus)="searchFocused = true"
+                (blur)="searchFocused = false"
+                placeholder="Rechercher..."/>
+              <button class="ol-search-x" *ngIf="searchQuery" (click)="searchQuery = ''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="ol-view-toggle">
+              <button class="ol-view-btn" [class.ol-view-btn--on]="isTableView()" (click)="setView('table')" title="Vue tableau">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+              </button>
+              <button class="ol-view-btn" [class.ol-view-btn--on]="isCardsView()" (click)="setView('cards')" title="Vue cartes">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+              </button>
+            </div>
+
+            <button class="ol-btn-primary" (click)="openForm.emit(undefined)">
+              <span>+</span> Publier une offre
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille cards -->
       <div class="ol-cards-grid">
         <div class="ol-card"
              *ngFor="let offre of filteredOffres; let i = index"
@@ -175,7 +286,7 @@
 
           <div class="ol-card-head">
             <div class="ol-card-ico">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <rect x="2" y="7" width="20" height="14" rx="2"/>
                 <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
               </svg>
@@ -201,25 +312,24 @@
           </div>
 
           <div class="ol-card-date">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <rect x="3" y="4" width="18" height="18" rx="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            {{ formatDate(offre.datePublication) }}
-            <span class="ol-card-date-rel">· {{ formatDateRelative(offre.datePublication) }}</span>
+            {{ formatDate(offre.datePublication) }} · {{ formatDateRelative(offre.datePublication) }}
           </div>
 
           <div class="ol-card-sep"></div>
 
           <div class="ol-card-actions">
             <button class="ol-act" (click)="openForm.emit(offre)" title="Modifier">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
             </button>
             <button class="ol-act ol-act--del" (click)="onSupprimer(offre.id)" title="Supprimer">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6l-1 14H6L5 6"/>
                 <path d="M10 11v6m4-6v6"/>
@@ -227,31 +337,29 @@
             </button>
             <button class="ol-btn-voir ol-btn-voir--full" (click)="voirDetail.emit(offre)">
               Voir les détails
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </button>
           </div>
+
         </div>
       </div>
 
+      <!-- Empty state cards -->
       <div class="ol-empty" *ngIf="filteredOffres.length === 0">
         <div class="ol-empty-ico">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
         </div>
         <p class="ol-empty-title">Aucune offre trouvée</p>
         <p class="ol-empty-sub">Modifiez votre recherche ou publiez une nouvelle offre.</p>
         <button class="ol-btn-primary" style="margin-top:8px" (click)="openForm.emit(undefined)">
-          <span class="ol-btn-icon">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-          </span>
-          Publier une offre
+          <span>+</span> Publier une offre
         </button>
       </div>
+
     </div>
 
   </div>

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar'; // ✅ corrigé
 
 interface StatCard {
   title: string;
@@ -19,15 +18,14 @@ interface MonthData {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, AdminSidebarComponent],
+  imports: [CommonModule],
   templateUrl: './admin-dashboard.html',
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
 
-  searchQuery: string = '';
-  notificationCount: number = 3;
-  currentYear: number = new Date().getFullYear();
+  searchQuery = '';
+  notificationCount = 3;
 
   statCards: StatCard[] = [
     { title: 'Utilisateurs RH',         value: 12,  subtitle: '+2 ce mois',     icon: 'rh',        trend: 'up'      },
@@ -48,9 +46,9 @@ export class AdminDashboardComponent implements OnInit {
   ];
 
   roleStats = {
-    rh:         { count: 12,  percent: 6,  color: '#E8A040' },
+    rh:         { count: 12,  percent: 6,  color: '#C2580F' },
     encadrants: { count: 28,  percent: 14, color: '#1e2530' },
-    stagiaires: { count: 156, percent: 80, color: '#c97a20' },
+    stagiaires: { count: 156, percent: 80, color: '#a84a0c' },
   };
 
   get barMax(): number {
@@ -65,20 +63,18 @@ export class AdminDashboardComponent implements OnInit {
     const total = this.roleStats.rh.count + this.roleStats.encadrants.count + this.roleStats.stagiaires.count;
     const circumference = 2 * Math.PI * 70;
     const gap = 3;
-
     const data = [
       { label: 'RH',         count: this.roleStats.rh.count,         color: this.roleStats.rh.color         },
       { label: 'Encadrants', count: this.roleStats.encadrants.count, color: this.roleStats.encadrants.color },
       { label: 'Stagiaires', count: this.roleStats.stagiaires.count, color: this.roleStats.stagiaires.color },
     ];
-
     let offset = 0;
     return data.map(d => {
       const pct = d.count / total;
       const dashLen = pct * circumference - gap;
       const seg = {
         ...d,
-        dashArray: `${dashLen} ${circumference - dashLen}`,
+        dashArray:  `${dashLen} ${circumference - dashLen}`,
         dashOffset: -offset,
         pct: Math.round(pct * 100)
       };

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OffreStage } from '../shared/offre-stage.model';
+
 @Component({
   selector: 'app-offre-form',
   standalone: true,
@@ -10,6 +11,7 @@ import { OffreStage } from '../shared/offre-stage.model';
   styleUrls: ['./offre-form.css']
 })
 export class OffreFormComponent implements OnInit, OnChanges {
+
   @Input() offre: OffreStage | null = null;
   @Output() sauvegarder = new EventEmitter<OffreStage>();
   @Output() annuler     = new EventEmitter<void>();
@@ -29,8 +31,6 @@ export class OffreFormComponent implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder) {}
 
-  // ngOnChanges est appelé AVANT ngOnInit par Angular
-  // On initialise ici si l'input `offre` change (y compris au premier rendu)
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['offre']) {
       this.editMode    = !!this.offre;
@@ -40,8 +40,6 @@ export class OffreFormComponent implements OnInit, OnChanges {
     }
   }
 
-  // ngOnInit : on initialise le form UNIQUEMENT s'il n'a pas encore été créé
-  // (cas où offre est null dès le départ et ngOnChanges n'a pas été déclenché)
   ngOnInit(): void {
     if (!this.form) {
       this.editMode    = !!this.offre;
@@ -51,9 +49,7 @@ export class OffreFormComponent implements OnInit, OnChanges {
     }
   }
 
-  get formCompetences(): string[] {
-    return this.competences;
-  }
+  get formCompetences(): string[] { return this.competences; }
 
   isInvalid(control: string): boolean {
     const c = this.form.get(control);
@@ -81,7 +77,7 @@ export class OffreFormComponent implements OnInit, OnChanges {
 
   onSubmit(): void {
     if (this.form.invalid || this.submitted) return;
-    this.submitted = true; // bloque tout double-appel immédiat
+    this.submitted = true;
 
     const offreData: OffreStage = {
       id:              this.offre?.id,
@@ -91,12 +87,9 @@ export class OffreFormComponent implements OnInit, OnChanges {
     };
 
     this.sauvegarder.emit(offreData);
-    // NE PAS reset submitted ici : le parent doit fermer/réinitialiser le composant
   }
 
-  onAnnuler(): void {
-    this.annuler.emit();
-  }
+  onAnnuler(): void { this.annuler.emit(); }
 
   private initForm(): void {
     this.form = this.fb.group({
